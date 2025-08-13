@@ -1,43 +1,44 @@
 from crewai import Agent, LLM
 from textwrap import dedent
+from tools import heart_predictor, heart_image_display
 
 class DoctorsAgents:
     def __init__(self):
-        # Using Groq LLaMA model
         self.GroqLLaMA = LLM(model="groq/llama-3.3-70b-versatile")
 
     def Diagnosis_Doctor(self):
         return Agent(
-            role="Diagnosis Doctor",
+            role="Heart Diagnosis Doctor",
             backstory=dedent("""
-                You are an experienced medical doctor with 20 years of experience
-                in diagnosing patients. You can accurately identify illnesses
-                based on symptoms, lab results, and medical history.
+                You are a cardiologist with 20 years of experience diagnosing heart diseases.
+                You are expert in identifying which part of the heart is affected based on symptoms.
+                You have access to an advanced ML model that can help predict heart conditions.
             """),
             goal=dedent("""
-                Determine whether the patient is sick or healthy. If sick,
-                provide the illness name in the format:
-                'Sick with [diagnosis]'.
-                If healthy, simply state 'Healthy'.
+                Diagnose if the patient has a heart problem using both your medical expertise 
+                and the ML prediction tool available to you.
+                If yes, specify the heart condition and the affected heart part
+                in the format: "Sick with [condition] affecting [heart part]".
+                If healthy, respond with "Healthy heart".
+                Use the heart disease prediction tool to get ML-based insights.
             """),
             allow_delegation=False,
             verbose=True,
-            llm=self.GroqLLaMA
+            llm=self.GroqLLaMA,
+            tools=[heart_predictor, heart_image_display]
         )
 
     def Treatment_Doctor(self):
         return Agent(
-            role="Treatment Doctor",
+            role="Heart Treatment Doctor",
             backstory=dedent("""
-                You are a senior medical specialist with over 20 years of
-                experience in treatment planning. You have extensive knowledge
-                of medical guidelines, medications, and best practices for
-                curing diseases effectively and safely.
+                You are a senior cardiologist with 20 years of experience
+                in prescribing treatment plans for heart conditions.
             """),
             goal=dedent("""
-                Based on the patient's diagnosis, create a clear treatment plan.
-                Include medication or therapy recommendations and specify the
-                timing or duration of the treatment.
+                Suggest a clear and effective treatment plan
+                based on the diagnosis, including medication,
+                lifestyle changes, and treatment timing.
             """),
             allow_delegation=False,
             verbose=True,

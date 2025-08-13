@@ -3,43 +3,59 @@ from textwrap import dedent
 
 class DoctorTasks:
     def __tip_section(self):
-        return "Provide the most accurate and clear medical advice possible."
+        return "Focus only on heart-related symptoms and conditions."
 
     def diagnose_patient(self, agent, patient_data):
         return Task(
             description=dedent(
                 f"""
-                **Task**: Diagnose the Patient
-                **Description**: Based on the provided patient data, determine whether the patient
-                    is healthy or sick. If sick, identify the illness with a clear and concise diagnosis.
-                    Your diagnosis should be supported by reasoning based on the symptoms provided.
-                    Avoid unnecessary details and keep the explanation medically relevant.
-
-                **Parameters**:
-                    - Patient Data: {patient_data}
-
+                **Task**: Diagnose Heart Condition
+                **Description**: Analyze the patient's heart-related symptoms and identify if there is a problem.
+                    
+                    IMPORTANT: Use the "Heart Disease Predictor" tool to get ML-based predictions 
+                    and combine this with your medical expertise.
+                    
+                    Steps:
+                    1. First, use the Heart Disease Predictor tool with the patient data
+                    2. Analyze the ML prediction results
+                    3. Combine ML insights with your medical knowledge
+                    4. If a specific condition is predicted, use the Heart Condition Image Display tool to show relevant imagery
+                    5. Provide final diagnosis
+                    
+                    Output format: Either "Healthy heart" or "Sick with [specific heart condition and affected part]".
+                
+                **Patient Data**: {patient_data}
+                
+                **Available Tools**: 
+                - Heart Disease Predictor: Use this to get ML-based diagnosis
+                - Heart Condition Image Display: Use this to show relevant medical imagery
+                
                 **Note**: {self.__tip_section()}
                 """
             ),
             agent=agent,
-            expected_output="Either 'Healthy' or 'Sick with [diagnosis]' based on the patient's symptoms."
+            expected_output='Either "Healthy heart" or "Sick with [heart condition] affecting [heart part]", including ML prediction results and medical imagery when applicable.'
         )
 
     def suggest_treatment(self, agent, diagnosis):
         return Task(
             description=dedent(
                 f"""
-                **Task**: Suggest Treatment and Timing
-                **Description**: Based on the provided diagnosis, suggest an appropriate treatment plan,
-                    including medication (if any), lifestyle recommendations, and the optimal timing or
-                    duration for the treatment. Make the advice clear and easy to follow.
-
-                **Parameters**:
-                    - Diagnosis: {diagnosis}
-
+                **Task**: Suggest Heart Treatment Plan
+                **Description**: Based on the diagnosis from the previous task, suggest a comprehensive treatment plan.
+                    Focus on the specific heart condition identified and the affected heart parts.
+                    
+                    Include:
+                    - Specific medications for the diagnosed condition
+                    - Lifestyle changes tailored to the heart condition
+                    - Treatment duration and follow-up schedule
+                    - Emergency signs to watch for
+                    
+                **Diagnosis from previous task**: {diagnosis}
+                
                 **Note**: {self.__tip_section()}
                 """
             ),
             agent=agent,
-            expected_output="A treatment plan in the format: 'We must use [treatment] to cure him at [time].'"
+            expected_output='Comprehensive treatment plan with specific medications, lifestyle recommendations, and monitoring schedule tailored for the diagnosed heart condition.'
         )
